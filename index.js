@@ -13,10 +13,13 @@ app.use(express.json())
 
 // routes
 
+// root route
 app.get('/', function (req, res) {
     res.render("home")
 })
 
+ 
+// post home route (create)
 app.post("/home", function(req, res){
     const {name: username, education: edu,  age: ag} = req.body
     User.create({
@@ -25,12 +28,12 @@ app.post("/home", function(req, res){
         education: edu
     }).then(result=> console.log(result))
     .catch(err=> console.log(err))
-   res.render("viewpage", {username, edu, ag})
+    res.redirect("/read")
 })
 
+// read route (read)
+
 app.get("/read", async (req, res)=>{
-    // let {data} = User.find({})
-    // res.send({data})
    User.find().then(result=>{
     let mainRes = result;
     res.render("read", {mainRes})
@@ -47,6 +50,7 @@ app.listen(port)
 
 const mongoose = require("mongoose");
 const { stringify } = require("nodemon/lib/utils");
+const { rmSync } = require("fs");
 
 main()
 .then(res=> console.log("connection stablised"))

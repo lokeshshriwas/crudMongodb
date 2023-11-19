@@ -13,6 +13,31 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
 
+// mongodb connection
+
+const mongoose = require("mongoose");
+const { stringify } = require("nodemon/lib/utils");
+const { rmSync } = require("fs");
+
+main()
+.then(res=> console.log("connection stablised"))
+.catch((err)=> console.log(err))
+
+
+async function main(){
+    await mongoose.connect('mongodb://127.0.0.1:27017/amazon');
+}
+
+const userSchema = new mongoose.Schema({
+    name : String,
+    age : Number,
+    education : String
+})
+
+const User = mongoose.model("User", userSchema) 
+
+
+
 
 // routes
 
@@ -93,26 +118,4 @@ const port = 8080
 app.listen(port)
 
 
-// mongodb connection
-
-const mongoose = require("mongoose");
-const { stringify } = require("nodemon/lib/utils");
-const { rmSync } = require("fs");
-
-main()
-.then(res=> console.log("connection stablised"))
-.catch((err)=> console.log(err))
-
-
-async function main(){
-    await mongoose.connect('mongodb://127.0.0.1:27017/amazon');
-}
-
-const userSchema = new mongoose.Schema({
-    name : String,
-    age : Number,
-    education : String
-})
-
-const User = mongoose.model("User", userSchema) 
 

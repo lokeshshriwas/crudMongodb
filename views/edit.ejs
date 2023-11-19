@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>edit</title>
+</head>
+<body>
+    <h1>Edit your education</h1>
+    <h2><%= trgRes.name %></h2>
+    <form action="/read/<%= trgRes.id%>?_method=PATCH" method="post">
+        <textarea name="education" id="" cols="30" rows="10"><%= trgRes.education%></textarea>
+        <br>
+        <button>submit</button>
+    </form>
+</body>
+</html>

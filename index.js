@@ -5,10 +5,13 @@ const app = express()
 const path = require("path")
 var methodOverride = require('method-override');
 
+
+app.use(methodOverride('_method'))
 app.set('view engine', 'ejs');
 app.set("views", path.join(__dirname, "./views"))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
+
 
 
 // routes
@@ -39,6 +42,52 @@ app.get("/read", async (req, res)=>{
     res.render("read", {mainRes})
    })
 })
+
+
+// edit route
+
+app.get("/read/:id/edit", (req, res)=>{
+    const {id: trgId} = req.params
+    User.findOne({_id: `${trgId}`})
+    .then(result => {
+        const trgRes = result;
+        res.render("edit", {trgRes})
+    })
+    .catch((err)=> console.log(err))
+})
+
+// edit patch route
+
+app.patch("/read/:id", (req, res)=>{
+   const {id: trgId} = req.params
+   const {education: edu} = req.body
+   
+    User.findOne({_id: `${trgId}`})
+    .then(result=>{
+        const trgRes = result;
+        return trgRes
+    })
+    .then(async (trgRes)=>{
+        if(trgRes.education != edu){
+           await User.updateOne({_id: trgRes.id}, {education: edu})
+            res.redirect("/read")
+        } else{
+            res.redirect("/read")
+        }
+    })
+
+    // .then((trgRes)=>{
+    //     if(trgRes.education != edu){
+    //         console.log(edu)
+    //     } else{
+    //         console.log("nothing")
+    //     }
+    // })
+
+    
+
+})
+
 
 
 // port to listen

@@ -6,6 +6,13 @@
     <title>read</title>
 </head>
 <body>
+
+    <form action="http://localhost:8080/">
+        <button>Create New user</button>
+    </form>
+
+    <br>
+
     <table border="1">
         <% for(let res of mainRes){ %>
             <tr>
@@ -15,6 +22,11 @@
                 <td>
                     <form action="./read/<%= res._id %>/edit" method="get">
                         <button>Edit</button>
+                    </form>
+                </td>
+                <td>
+                    <form action="/read/<%= res.id%>?_method=DELETE" method="post">
+                        <button>Delete</button>
                     </form>
                 </td>
             </tr>

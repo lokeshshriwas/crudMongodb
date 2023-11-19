@@ -29,8 +29,7 @@ app.post("/home", function(req, res){
         name: username,
         age: ag,
         education: edu
-    }).then(result=> console.log(result))
-    .catch(err=> console.log(err))
+    })
     res.redirect("/read")
 })
 
@@ -75,18 +74,17 @@ app.patch("/read/:id", (req, res)=>{
             res.redirect("/read")
         }
     })
-
-    // .then((trgRes)=>{
-    //     if(trgRes.education != edu){
-    //         console.log(edu)
-    //     } else{
-    //         console.log("nothing")
-    //     }
-    // })
-
-    
-
 })
+
+
+// delete route
+
+app.delete("/read/:id", (req, res)=>{
+    const {id: delId} = req.params
+    User.findByIdAndDelete(`${delId}`)
+    res.redirect("/read")
+})  
+
 
 
 

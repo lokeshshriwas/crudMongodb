@@ -6,6 +6,9 @@ const path = require("path")
 var methodOverride = require('method-override');
 
 
+
+// middlewares
+
 app.use(methodOverride('_method'))
 app.set('view engine', 'ejs');
 app.set("views", path.join(__dirname, "./views"))

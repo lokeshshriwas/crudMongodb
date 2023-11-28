@@ -107,9 +107,11 @@ app.patch("/read/:id", (req, res)=>{
 
 // delete route
 
-app.delete("/read/:id", (req, res)=>{
+app.delete("/read/:id", async (req, res)=>{
+    console.log("hua")
     const {id: delId} = req.params
-    User.findByIdAndDelete(`${delId}`)
+    console.log(delId)
+    await User.findByIdAndDelete(`${delId}`)
     res.redirect("/read")
 })  
 

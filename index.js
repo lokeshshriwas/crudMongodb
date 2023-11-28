@@ -50,10 +50,15 @@ app.get('/', function (req, res) {
     res.render("home")
 })
 
+
+function asyncWrap (fn){
+    return function (req, res, next){   //this function will send the response to the middlewares if needed
+        fn(req, res, next).catch((err) => next(err)) // allows the inner function (fn) to have access to the request, response, and next middleware function in the chain.
+    }
+}
  
 // post home route (create)
-app.post("/home", async (req, res, next)=>{
-   try {
+app.post("/home", asyncWrap (async (req, res, next)=>{
     const {name: username, education: edu,  age: ag} = req.body
     await User.create({
         name: username,
@@ -61,30 +66,22 @@ app.post("/home", async (req, res, next)=>{
         education: edu
     })
     res.redirect("/read")
-   } catch (error) {
-        next(error)
-   }
-})
+}))
 
 // read route (read)
 
-app.get("/read", async (req, res,next)=>{
-  try {
+app.get("/read", asyncWrap(async (req, res, next)=>{
     let mainRes = await User.find()
     if(!mainRes){
         throw new expressError(404,"page not found")
     }
     res.render("read", {mainRes})
-  } catch (error) {
-    next(error)
-  }
-})
+}))
 
 
 // edit route
 
-app.get("/read/:id/edit", async (req, res, next)=>{
-    try {
+app.get("/read/:id/edit", asyncWrap(async (req, res, next)=>{
         const {id: trgId} = req.params
         const trgRes =  await User.findOne({_id: `${trgId}`})
         
@@ -92,15 +89,12 @@ app.get("/read/:id/edit", async (req, res, next)=>{
             next( new expressError(402,"forbidden error found"))
          }
         res.render("edit", {trgRes})
-    } catch (error) {
-        next(error)
-    }
-})
+}))
 
 // edit patch route
 
-app.patch("/read/:id",async (req, res, next)=>{
-    try {
+app.patch("/read/:id", asyncWrap(async (req, res, next)=>{
+
         const {id: trgId} = req.params
         const {education: edu} = req.body
           const trgRes = await User.findOne({_id: `${trgId}`})
@@ -110,24 +104,17 @@ app.patch("/read/:id",async (req, res, next)=>{
              } else{
                  res.redirect("/read")
              }
-    } catch (error) {
-        next(error)
     }
-    }
-)
+))
 
 
 // delete route
 
-app.delete("/read/:id", async (req, res, next)=>{
-    try {
+app.delete("/read/:id", asyncWrap(async (req, res, next)=>{
         const {id: delId} = req.params
         await User.findByIdAndDelete(`${delId}`)
         res.redirect("/read")
-    } catch (error) {
-        next(error)
-    }
-})  
+}))  
 
 // error handling middlewares
 

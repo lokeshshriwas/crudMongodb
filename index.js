@@ -117,10 +117,19 @@ app.delete("/read/:id", asyncWrap(async (req, res, next)=>{
 }))  
 
 // error handling middlewares
+app.use((err ,req, res ,next) => {
+    console.log(err.name)  //we can create seperate ejs template for each type of error according to there name
+})
 
 app.use((err, req, res, next) => {
     let {status = 500 , message = "some error occured"} = err
     res.status(status).send(message)
+    next(err)
+
+})
+
+app.use((req , res , next)=>{
+    res.status(404).send("route not found") //this code is for router not found message
 })
 
 

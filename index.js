@@ -3,7 +3,8 @@
 const express = require("express")
 const app = express()
 const path = require("path")
-var methodOverride = require('method-override');
+const methodOverride = require('method-override');
+const expressError = require("./expressError")
 
 
 
@@ -40,8 +41,6 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.model("User", userSchema) 
 
 
-
-
 // routes
 
 // root route
@@ -64,45 +63,34 @@ app.post("/home", function(req, res){
 // read route (read)
 
 app.get("/read", async (req, res)=>{
-   User.find().then(result=>{
-    let mainRes = result;
+    let mainRes = await User.find()
     res.render("read", {mainRes})
    })
-})
 
 
 // edit route
 
-app.get("/read/:id/edit", (req, res)=>{
+app.get("/read/:id/edit", async (req, res)=>{
     const {id: trgId} = req.params
-    User.findOne({_id: `${trgId}`})
-    .then(result => {
-        const trgRes = result;
-        res.render("edit", {trgRes})
+    const trgRes =  await User.findOne({_id: `${trgId}`})
+    res.render("edit", {trgRes})
     })
-    .catch((err)=> console.log(err))
-})
 
 // edit patch route
 
-app.patch("/read/:id", (req, res)=>{
+app.patch("/read/:id",async (req, res)=>{
    const {id: trgId} = req.params
    const {education: edu} = req.body
-   
-    User.findOne({_id: `${trgId}`})
-    .then(result=>{
-        const trgRes = result;
-        return trgRes
-    })
-    .then(async (trgRes)=>{
+     const trgRes = await User.findOne({_id: `${trgId}`})
         if(trgRes.education != edu){
            await User.updateOne({_id: trgRes.id}, {education: edu})
             res.redirect("/read")
         } else{
             res.redirect("/read")
         }
-    })
-})
+    }
+)
+
 
 
 // delete route
